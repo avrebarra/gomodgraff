@@ -1,24 +1,25 @@
 package main
 
 import (
-	"fmt" 
+	"fmt"
 	"strings"
 
 	"github.com/shrotavre/gomodgraff/internal/pkg/pack"
 )
 
-func PrintDOT(m DependencyMap) {
-	fmt.Println("digraph sample {")
+func BuildDOTString(m DependencyMap) (dotstring string) {
+	dotstring += "digraph sample {\n"
 	for pkgpath, deps := range m {
 		for dep := range deps {
-
-			fmt.Printf(
+			dotstring += fmt.Sprintf(
 				"\"%s\" -> \"%s\";\n",
 				pkgpath, dep,
 			)
 		}
 	}
-	fmt.Println("}")
+	dotstring += "}"
+
+	return
 }
 
 func GetRelPkgName(fpath string) string {

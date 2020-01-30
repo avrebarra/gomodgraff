@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"os/exec"
 	"path/filepath"
 	"strings"
 
@@ -14,6 +15,7 @@ type DependencyMap map[string]map[string]bool
 func main() {
 	dirpath := flag.String("dir", ".", "target directory to draw dependency graph from")
 	internalOnly := flag.Bool("internal", false, "show only internal packages")
+	imgpath := flag.String("file", "gomodgraff.png", "target filename to save to")
 
 	flag.Parse()
 
@@ -42,5 +44,15 @@ func main() {
 		}
 	}
 
-	PrintDOT(depsmapping)
+	// Build DOT string
+	DOTString := BuildDOTString(depsmapping)
+
+	// Pipe to dot
+	cmd := exec.Command("dot", "-Tpng", "-o", *imgpath)
+	cmd.Stdin = strings.NewReader(DOTString)
+
+	err := cmd.Run()
+	if err != nil {
+		panic(err)
+	}
 }
