@@ -16,6 +16,9 @@ func ReadModName(fpath string) (pkgname string) {
 	fscanner := bufio.NewScanner(f)
 	for fscanner.Scan() {
 		line := fscanner.Text()
+		if line == "" || strings.HasPrefix(line, "//") {
+			continue
+		}
 		return strings.Split(line, " ")[1]
 	}
 
@@ -39,9 +42,13 @@ func ReadImportedPkgs(fpath string) (pkgs []string) {
 		if line == "import ()" {
 			return
 		}
-		if line == "" {
+		if line == "" || strings.HasPrefix(line, "//") {
 			continue
 		}
+		if strings.HasPrefix(line, "//") {
+			continue
+		}
+
 		if holdingLongImport {
 			if line == ")" {
 				holdingLongImport = false
