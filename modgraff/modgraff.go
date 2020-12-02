@@ -97,10 +97,14 @@ func (e *Graff) Add(fpath string) (err error) {
 		return
 	}
 
-	filemodname := filepath.Join(e.modpath, node.Name.String())
+	filemodname := filepath.Join(node.Name.String())
 
 	for _, i := range node.Imports {
 		importname := strings.ReplaceAll(i.Path.Value, "\"", "")
+		// fmt.Println(e.modpath, filemodname, importname)
+		if !strings.Contains(importname, e.modpath) {
+			break
+		}
 		if e.depmap[filemodname] == nil {
 			e.depmap[filemodname] = map[string]bool{}
 		}
