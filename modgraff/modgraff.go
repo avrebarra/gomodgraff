@@ -14,6 +14,7 @@ import (
 )
 
 type Config struct {
+	Verbose      bool
 	DirPath      string
 	OnlyInternal bool
 }
@@ -84,6 +85,8 @@ func (e *Graff) readAll() (err error) {
 			return nil
 		}
 
+		verbose(e.config.Verbose, "found file", path)
+
 		return e.Add(path)
 	})
 
@@ -97,18 +100,20 @@ func (e *Graff) Add(fpath string) (err error) {
 		return
 	}
 
-	filemodname := filepath.Join(node.Name.String())
+	modname := filepath.Join(e.modpath, node.Name.String())
+	verbose(e.config.Verbose, "  mod name", modname)
+	verbose(e.config.Verbose, "  mod imports", len(node.Imports))
 
 	for _, i := range node.Imports {
 		importname := strings.ReplaceAll(i.Path.Value, "\"", "")
-		// fmt.Println(e.modpath, filemodname, importname)
-		if !strings.Contains(importname, e.modpath) {
-			break
+		verbose(e.config.Verbose, "      imported", importname)
+
+		// TODO: seclude internal imports
+
+		if e.depmap[modname] == nil {
+			e.depmap[modname] = map[string]bool{}
 		}
-		if e.depmap[filemodname] == nil {
-			e.depmap[filemodname] = map[string]bool{}
-		}
-		e.depmap[filemodname][importname] = true
+		e.depmap[modname][importname] = true
 	}
 
 	return

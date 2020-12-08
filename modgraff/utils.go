@@ -6,6 +6,13 @@ import (
 	"strings"
 )
 
+func verbose(enabled bool, v ...interface{}) {
+	if !enabled {
+		return
+	}
+	log.Println(v...)
+}
+
 func findModFile(dirpath string) (filename string) {
 	dir, err := os.Open(dirpath)
 	if err != nil {

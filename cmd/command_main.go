@@ -1,13 +1,17 @@
 package cmd
 
 import (
-	"fmt"
+	"os"
 
 	"github.com/shrotavre/gomodgraff/modgraff"
 	"gopkg.in/go-playground/validator.v9"
 )
 
-type ConfigCommandMain struct{}
+type ConfigCommandMain struct {
+	Path         string `validate:"required"`
+	OnlyInternal bool
+	Verbose      bool
+}
 
 type CommandMain struct {
 	config ConfigCommandMain
@@ -25,14 +29,20 @@ func NewCommandMain(cfg ConfigCommandMain) CommandMain {
 
 func (c *CommandMain) Run() (err error) {
 	g, err := modgraff.New(modgraff.Config{
-		DirPath:      ".",
-		OnlyInternal: true,
+		DirPath:      c.config.Path,
+		OnlyInternal: c.config.OnlyInternal,
+		Verbose:      c.config.Verbose,
 	})
 	if err != nil {
 		return
 	}
 
-	fmt.Println(g.DotString())
+	dotstr, err := g.DotString()
+	if err != nil {
+		return
+	}
+
+	os.Stdout.Write([]byte(dotstr))
 
 	return nil
 }

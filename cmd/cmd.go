@@ -17,8 +17,20 @@ func Initialize() {
 	// cmd.SetBannerFunction(customBanner)
 
 	// default action
+	path := "."
+	onlyInternal := false
+	verbose := false
+
+	cmd.StringFlag("path", "golang project dir to analyze graph", &path)
+	cmd.BoolFlag("only-internal", "only list internal dependencies", &onlyInternal)
+	cmd.BoolFlag("verbose", "perform with process messages", &verbose)
+
 	cmd.Action(func() error {
-		subcmd := NewCommandMain(ConfigCommandMain{})
+		subcmd := NewCommandMain(ConfigCommandMain{
+			Path:         path,
+			OnlyInternal: onlyInternal,
+			Verbose:      verbose,
+		})
 		return subcmd.Run()
 	})
 }
