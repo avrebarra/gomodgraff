@@ -1,4 +1,5 @@
-dist/
+dist
+tmp
 
 # Binaries for programs and plugins
 *.exe
