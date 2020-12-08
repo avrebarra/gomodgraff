@@ -1,5 +1,5 @@
 # Simple makefile
-NAME=kairo
+NAME:=$(shell echo "$${PWD\#\#*/}")
 VERSION=v1
 
 ## check: run static analysis
