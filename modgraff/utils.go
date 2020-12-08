@@ -1,6 +1,7 @@
 package modgraff
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -10,7 +11,7 @@ func verbose(enabled bool, v ...interface{}) {
 	if !enabled {
 		return
 	}
-	log.Println(v...)
+	fmt.Println(v...)
 }
 
 func findModFile(dirpath string) (filename string) {
