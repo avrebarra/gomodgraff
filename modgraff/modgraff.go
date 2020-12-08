@@ -58,7 +58,7 @@ func (e *Graff) setupModPath() (err error) {
 		return
 	}
 
-	modfstr, err := ioutil.ReadFile(modfname)
+	modfstr, err := ioutil.ReadFile(filepath.Join(e.config.DirPath, modfname))
 	if err != nil {
 		err = fmt.Errorf("mod file read failure: %w", err)
 		return
@@ -79,6 +79,9 @@ func (e *Graff) setupModPath() (err error) {
 	}
 
 	e.modpath = modpath
+
+	verbose(e.config.Verbose, "mod directory path", e.config.DirPath)
+	verbose(e.config.Verbose, "mod name", e.modpath)
 
 	return
 }

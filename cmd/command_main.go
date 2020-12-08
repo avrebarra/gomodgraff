@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/shrotavre/gomodgraff/modgraff"
 	"gopkg.in/go-playground/validator.v9"
@@ -28,8 +29,13 @@ func NewCommandMain(cfg ConfigCommandMain) CommandMain {
 }
 
 func (c *CommandMain) Run() (err error) {
+	normpath, err := filepath.Abs(c.config.Path)
+	if err != nil {
+		return
+	}
+
 	g, err := modgraff.New(modgraff.Config{
-		DirPath:      c.config.Path,
+		DirPath:      normpath,
 		OnlyInternal: c.config.OnlyInternal,
 		Verbose:      c.config.Verbose,
 	})
