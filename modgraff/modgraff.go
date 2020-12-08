@@ -91,6 +91,9 @@ func (e *Graff) readAll() (err error) {
 		if !strings.HasSuffix(f.Name(), ".go") {
 			return nil
 		}
+		if strings.HasSuffix(f.Name(), "_test.go") {
+			return nil
+		}
 
 		verbose(e.config.Verbose, "found file", path)
 
