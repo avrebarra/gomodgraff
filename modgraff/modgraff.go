@@ -108,7 +108,10 @@ func (e *Graff) Add(fpath string) (err error) {
 		importname := strings.ReplaceAll(i.Path.Value, "\"", "")
 		verbose(e.config.Verbose, "      imported", importname)
 
-		// TODO: seclude internal imports
+		// seclude internal imports
+		if e.config.OnlyInternal && !strings.Contains(importname, e.modpath) {
+			continue
+		}
 
 		if e.depmap[modname] == nil {
 			e.depmap[modname] = map[string]bool{}
