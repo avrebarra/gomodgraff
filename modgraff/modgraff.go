@@ -110,8 +110,17 @@ func (e *Graff) Add(fpath string) (err error) {
 		return
 	}
 
-	modname := filepath.Join(e.modpath, node.Name.String())
+	moddir, err := filepath.Rel(e.config.DirPath, filepath.Dir(fpath))
+	if err != nil {
+		err = fmt.Errorf("cannot parse relative path")
+		return
+	}
+
+	// modname := filepath.Join(e.modpath, moddir, node.Name.String())
+	modname := filepath.Join(e.modpath, moddir)
+	// finmodname := modname
 	finmodname := internalModNotion + strings.Replace(modname, e.modpath+"/", "", 1)
+	verbose(e.config.Verbose, "  mod dir", moddir)
 	verbose(e.config.Verbose, "  mod name", modname)
 	verbose(e.config.Verbose, "  mod imports", len(node.Imports))
 
@@ -126,7 +135,7 @@ func (e *Graff) Add(fpath string) (err error) {
 
 		// shorten internal module names
 		finimportmodname := importname
-		if strings.Contains(importname, e.modpath+"/") {
+		if strings.Contains(importname, e.modpath) {
 			finimportmodname = internalModNotion + strings.Replace(importname, e.modpath+"/", "", 1)
 		}
 
