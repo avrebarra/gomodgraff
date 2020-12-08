@@ -13,9 +13,13 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
+const (
+	internalModNotion = "&"
+)
+
 type Config struct {
-	Verbose      bool
 	DirPath      string
+	Verbose      bool
 	OnlyInternal bool
 }
 
@@ -101,6 +105,7 @@ func (e *Graff) Add(fpath string) (err error) {
 	}
 
 	modname := filepath.Join(e.modpath, node.Name.String())
+	finmodname := internalModNotion + strings.Replace(modname, e.modpath+"/", "", 1)
 	verbose(e.config.Verbose, "  mod name", modname)
 	verbose(e.config.Verbose, "  mod imports", len(node.Imports))
 
@@ -113,10 +118,17 @@ func (e *Graff) Add(fpath string) (err error) {
 			continue
 		}
 
-		if e.depmap[modname] == nil {
-			e.depmap[modname] = map[string]bool{}
+		// shorten internal module names
+		finimportmodname := importname
+		if strings.Contains(importname, e.modpath+"/") {
+			finimportmodname = internalModNotion + strings.Replace(importname, e.modpath+"/", "", 1)
 		}
-		e.depmap[modname][importname] = true
+
+		// ensure store
+		if e.depmap[finmodname] == nil {
+			e.depmap[finmodname] = map[string]bool{}
+		}
+		e.depmap[finmodname][finimportmodname] = true
 	}
 
 	return
